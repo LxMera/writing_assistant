@@ -2,6 +2,8 @@
 
 Full-stack application that uses a **Large Language Model (LLM)** (e.g., OpenAI GPT) to rewrite text in different writing styles: **Professional, Casual, Polite, and Social Media**.
 
+![Vista previa de la aplicación](./app.png)
+
 ---
 
 ## 🚀 Technology Stack
