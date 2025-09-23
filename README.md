@@ -1,53 +1,135 @@
-# AI Writing Assistant
+# 📝 AI Writing Assistant
 
-A full-stack application that uses OpenAI's GPT to rephrase text in different writing styles (Professional, Casual, Polite, Social Media).
+Full-stack application that uses a **Large Language Model (LLM)** (e.g., OpenAI GPT) to rewrite text in different writing styles: **Professional, Casual, Polite, and Social Media**.
 
-## Features
+---
 
-### Base Features ✅
-- **Frontend**: ReactJS with modern hooks and components
-- **Backend**: FastAPI with Python
-- **AI Integration**: OpenAI gpt-4o-mini
-- **Writing Styles**: Professional, Casual, Polite, Social Media
-- **Process Control**: Disable input during processing, cancel button
-- **Error Handling**: Graceful error handling and user feedback
-
-### Bonus Features ✅
-- **Streaming Output**: Real-time text generation with word-by-word streaming
-- **Separate Text Areas**: Each writing style in its own dedicated area
-- **Production-Grade UI**: Clean, modern, responsive design
-- **Modern Framework Features**: React hooks, async/await, modern ES6+
-- **Modular Architecture**: Well-structured components and services
-- **Testing**: Unit and integration tests
-- **Containerization**: Docker support for backend
-- **Accessibility**: ARIA labels, keyboard navigation, high contrast support
-
-## Tech Stack
+## 🚀 Technology Stack
 
 ### Backend
-- **FastAPI**: Modern Python web framework
-- **OpenAI**: gpt-4o-mini for text processing
-- **Pydantic**: Data validation
-- **Pytest**: Testing framework
-- **Docker**: Containerization
+- **FastAPI**: Modern Python framework for APIs.
+- **OpenAI**: LLM (e.g., gpt-4o-mini) for text processing.
+- **Pydantic**: Data validation.
+- **Pytest**: Testing framework.
+- **Docker**: Containerization.
 
 ### Frontend
-- **React 18**: Modern React with hooks
-- **Axios**: HTTP client
-- **CSS3**: Modern styling with gradients, animations
-- **Jest**: Testing framework
+- **React 18**: Modern frontend with hooks.
 
-## Setup Instructions
+---
 
-### Prerequisites
-- Python 3.11+
-- Node.js 16+
-- Docker (optional)
-- OpenAI API key
+## 🔧 Prerequisites
+- Python 3.11+  
+- Node.js 16+  
+- Docker (optional, but recommended for backend)  
+- **Azure OpenAI** environment variables configured in `.env` in the **backend** folder (not included in repo):
 
-### Backend Setup
+```env
+AZURE_OPENAI_API_KEY=''
+AZURE_OPENAI_ENDPOINT=''
+AZURE_OPENAI_DEPLOYMENT=''
+```
 
-1. **Clone the repository**
+---
+
+## ⚙️ Installation and Execution Instructions
+
+### 1. Clone the repository
 ```bash
-   git clone <repository-url>
-   cd writing_assistant/backend
+git clone https://github.com/LxMera/writing_assistant.git
+```
+
+### 2. Backend (FastAPI with Docker)
+From the project root:
+
+```bash
+docker build -t writing_assistant_backend ./backend
+docker run -d -p 8000:8000 --name writing_backend writing_assistant_backend
+```
+The backend will be available at: http://localhost:8000/docs
+
+### 3. Frontend (React)
+Go to the frontend folder:
+
+```bash
+cd frontend
+npm install   # only the first time
+npm start
+```
+
+The frontend will be available at: http://localhost:3000
+
+---
+
+## 📄 Assumptions
+
+- The `.env` file with credentials is not included in the repository.
+- The frontend expects the backend to be running on http://localhost:8000.
+- This project is designed for local test/demo environment.
+
+# 📝 Asistente de Escritura con IA
+
+Aplicación full-stack que utiliza un **Large Language Model (LLM)** (ej. OpenAI GPT) para reformular texto en diferentes estilos de escritura: **Profesional, Casual, Cortés y Redes Sociales**.  
+
+---
+
+## 🚀 Stack Tecnológico
+
+### Backend
+- **FastAPI**: Framework moderno de Python para APIs.
+- **OpenAI**: LLM (ej. gpt-4o-mini) para procesamiento de texto.
+- **Pydantic**: Validación de datos.
+- **Pytest**: Framework de pruebas.
+- **Docker**: Containerización.
+
+### Frontend
+- **React 18**: Frontend moderno con hooks.
+
+---
+
+## 🔧 Requisitos Previos
+- Python 3.11+  
+- Node.js 16+  
+- Docker (opcional, pero recomendado para el backend)  
+- Variables de entorno de **Azure OpenAI** configuradas en `.env` en la carpeta **backend** (no incluidas en el repo):
+
+```env
+AZURE_OPENAI_API_KEY=''
+AZURE_OPENAI_ENDPOINT=''
+AZURE_OPENAI_DEPLOYMENT=''
+```
+
+---
+
+## ⚙️ Instrucciones de Instalación y Ejecución
+
+### 1. Clonar el repositorio
+```bash
+git clone https://github.com/LxMera/writing_assistant.git
+```
+
+### 2. Backend (FastAPI con Docker)
+Desde la raíz del proyecto:
+
+```bash
+docker build -t writing_assistant_backend ./backend
+docker run -d -p 8000:8000 --name writing_backend writing_assistant_backend
+```
+El backend quedará disponible en: http://localhost:8000/docs
+
+### 3. Frontend (React)
+Ir a la carpeta del frontend:
+
+```bash
+cd frontend
+npm install   # solo la primera vez
+npm start
+```
+
+El frontend quedará disponible en: http://localhost:3000
+
+📄 Supuestos
+
+- El archivo .env con credenciales no se incluye en el repositorio.
+- El frontend espera que el backend esté corriendo en http://localhost:8000.
+- Este proyecto está diseñado para entorno local de prueba/demostración.
