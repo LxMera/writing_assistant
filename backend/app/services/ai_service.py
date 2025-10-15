@@ -1,8 +1,10 @@
 from openai import AsyncAzureOpenAI
+from openai import AsyncOpenAI
 import os
 from typing import AsyncGenerator, Dict
 import asyncio
 from dotenv import load_dotenv
+from anthropic import AsyncAnthropic
 
 load_dotenv()
 
@@ -73,6 +75,138 @@ class AIService:
                 
         except Exception as e:
             print(f"Azure stream error for {style}: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            yield {
+                "style": style,
+                "content": f"Error: {str(e)}",
+                "is_complete": True
+            }
+            
+    async def _call_openai(self, prompt: str) -> str:
+        self.client = AsyncOpenAI(
+            api_key=os.getenv("OPENAI_API_KEY")
+        )
+
+        response = await self.client.chat.completions.create(
+            model = os.getenv("OPENAI_MODEL"),
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=500,
+            temperature=0.7
+        )
+        
+        content = response.choices[0].message.content
+        return content
+    
+    async def _stream_openai(self, prompt: str, style: str) -> AsyncGenerator:
+        try:
+            self.client = AsyncOpenAI(
+                api_key=os.getenv("OPENAI_API_KEY")
+            )
+            
+            stream = await self.client.chat.completions.create(
+                model = os.getenv("OPENAI_MODEL"),
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=150,
+                temperature=0.7,
+                stream=True
+            )
+            
+            content = ""
+            async for chunk in stream:
+                # Validación robusta
+                if hasattr(chunk, 'choices') and chunk.choices:
+                    delta = chunk.choices[0].delta
+                    if hasattr(delta, 'content') and delta.content:
+                        content += delta.content
+                        yield {
+                            "style": style,
+                            "content": content,
+                            "is_complete": False
+                        }
+                        await asyncio.sleep(0.05)
+            
+            # Yield final solo si hay contenido
+            if content:
+                yield {
+                    "style": style,
+                    "content": content,
+                    "is_complete": True
+                }
+            else:
+                yield {
+                    "style": style,
+                    "content": "No content generated",
+                    "is_complete": True
+                }
+                
+        except Exception as e:
+            print(f"Azure stream error for {style}: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            yield {
+                "style": style,
+                "content": f"Error: {str(e)}",
+                "is_complete": True
+            }
+            
+    async def _call_claude(self, prompt: str) -> str:
+        self.client = AsyncAnthropic(
+            api_key=os.getenv("ANTHROPIC_API_KEY")
+        )
+
+        response = await self.client.messages.create(
+            model = os.getenv("CLAUDE_MODEL", "claude-sonnet-4-20250514"), 
+            max_tokens=500,
+            temperature=0.7,
+            messages=[{"role": "user", "content": prompt}]
+        )
+
+        content = response.content[0].text
+        return content
+    
+    async def _stream_claude(self, prompt: str, style: str) -> AsyncGenerator:
+        try:
+            self.client = AsyncAnthropic(
+                api_key=os.getenv("ANTHROPIC_API_KEY")
+            )
+
+            content = ""
+
+            async with self.client.messages.stream(
+                model=os.getenv("CLAUDE_MODEL", "claude-sonnet-4-20250514"),
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=150,
+                temperature=0.7,
+            ) as stream:
+                async for event in stream:
+                    if event.type == "content_block_delta" and hasattr(event.delta, "text"):
+                        chunk = event.delta.text
+                        content += chunk
+
+                        yield {
+                            "style": style,
+                            "content": content,
+                            "is_complete": False
+                        }
+                        await asyncio.sleep(0.05)
+
+            # Yield final solo si hay contenido
+            if content:
+                yield {
+                    "style": style,
+                    "content": content,
+                    "is_complete": True
+                }
+            else:
+                yield {
+                    "style": style,
+                    "content": "No content generated",
+                    "is_complete": True
+                }
+
+        except Exception as e:
+            print(f"Claude stream error for {style}: {str(e)}")
             import traceback
             traceback.print_exc()
             yield {

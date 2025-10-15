@@ -18,8 +18,6 @@ services:
   backend:
     build: ./backend
     container_name: ai-writing-backend
-    environment:
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
     env_file:
     - ./backend/.env 
     volumes:
