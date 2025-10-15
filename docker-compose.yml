@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  # Nginx - Proxy reverso con autenticación
+  nginx:
+    build: ./nginx
+    container_name: ai-writing-nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - ai-writing-network
+    restart: unless-stopped
+
+  # Backend - FastAPI
+  backend:
+    build: ./backend
+    container_name: ai-writing-backend
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    env_file:
+    - ./backend/.env 
+    volumes:
+      - ./backend:/app
+    expose:
+      - "8000"
+    networks:
+      - ai-writing-network
+    restart: unless-stopped
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # Frontend - React
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ai-writing-frontend
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+    expose:
+      - "3000"
+    networks:
+      - ai-writing-network
+    restart: unless-stopped
+    environment:
+      - REACT_APP_API_BASE_URL=http://localhost/api
+      - CHOKIDAR_USEPOLLING=true
+    stdin_open: true
+    tty: true
+
+networks:
+  ai-writing-network:
+    driver: bridge

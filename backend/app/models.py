@@ -1,8 +1,10 @@
 from pydantic import BaseModel
 from typing import Optional
+from typing import Literal
 
 class TextInput(BaseModel):
     text: str
+    provider: Literal["openai", "azure", "claude"] = "azure"
 
 class StyleResponse(BaseModel):
     professional: str

@@ -20,7 +20,7 @@ export const useWritingProcessor = () => {
   
   const abortControllerRef = useRef(null);
 
-  const processText = useCallback(async (text, useStreaming = false) => {
+  const processText = useCallback(async (text, useStreaming = false, provider = 'azure') => {
     if (!text.trim()) {
       setError('Please enter some text to process');
       return;
@@ -48,12 +48,24 @@ export const useWritingProcessor = () => {
 
         await writingService.rephraseTextStream(
           text,
+          provider,
           (chunk) => {
+            console.log('Chunk received in hook:', chunk); // ← AGREGAR DEBUG
             if (chunk.style && chunk.style !== 'error') {
               setStreamingResults(prev => ({
                 ...prev,
                 [chunk.style]: chunk.content
               }));
+              
+              // Si está completo, también actualizar results
+              if (chunk.is_complete) {
+                setResults(prev => ({
+                  ...prev,
+                  [chunk.style]: chunk.content
+                }));
+              }
+            } else if (chunk.style === 'error') {
+              setError(chunk.content);
             }
           },
           (error) => {
@@ -64,7 +76,7 @@ export const useWritingProcessor = () => {
 
         setIsStreaming(false);
       } else {
-        const response = await writingService.rephraseText(text);
+        const response = await writingService.rephraseText(text, provider);
         setResults(response);
       }
     } catch (error) {

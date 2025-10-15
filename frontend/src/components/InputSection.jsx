@@ -4,10 +4,11 @@ import LoadingSpinner from './LoadingSpinner';
 const InputSection = ({ onProcess, isProcessing, onCancel, onClear }) => {
   const [text, setText] = useState('');
   const [useStreaming, setUseStreaming] = useState(true);
+  const [provider, setProvider] = useState('azure');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onProcess(text, useStreaming);
+    onProcess(text, useStreaming, provider);
   };
 
   const handleClear = () => {
@@ -71,6 +72,22 @@ const InputSection = ({ onProcess, isProcessing, onCancel, onClear }) => {
           >
             Clear
           </button>
+
+          {/* ← AGREGAR ESTO AQUÍ */}
+          <div className="provider-selector">
+            <label htmlFor="provider-select">AI Provider:</label>
+            <select
+              id="provider-select"
+              value={provider}
+              onChange={(e) => setProvider(e.target.value)}
+              disabled={isProcessing}
+              className="provider-select"
+            >
+              <option value="azure">Azure OpenAI</option>
+              <option value="openai">OpenAI</option>
+              <option value="claude">Claude AI</option>
+            </select>
+          </div>
         </div>
       </form>
     </div>
