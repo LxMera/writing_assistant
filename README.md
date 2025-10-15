@@ -40,12 +40,16 @@ A full-stack application that uses OpenAI's GPT to rephrase text in different wr
 - Python 3.11+  
 - Node.js 16+  
 - Docker (opcional, pero recomendado para el backend)  
-- Variables de entorno de **Azure OpenAI** configuradas en `.env` en la carpeta **backend** (no incluidas en el repo):
+- Variables de entorno de **Azure OpenAI**, **Openai** y **Anthropic (Claude)** configuradas en `.env` en la carpeta **backend** (no incluidas en el repo):
 
 ```env
 AZURE_OPENAI_API_KEY=''
 AZURE_OPENAI_ENDPOINT=''
-AZURE_OPENAI_DEPLOYMENT=''
+AZURE_OPENAI_DEPLOYMENT='gpt-4o-mini'
+OPENAI_API_KEY = ''
+OPENAI_MODEL = 'gpt-4o-mini'
+ANTHROPIC_API_KEY = ''
+CLAUDE_MODEL = 'claude-sonnet-4-20250514'
 ```
 
 ---
@@ -57,18 +61,12 @@ AZURE_OPENAI_DEPLOYMENT=''
 git clone https://github.com/LxMera/writing_assistant.git
 ```
 
-### 2. Backend (FastAPI con Docker)
-Desde la raíz del proyecto:
+### 2. Backend, frontend and nginx
+Desde la raíz del proyecto (writing_assistant):
 
 ```bash
-docker build -t writing_assistant_backend ./backend
-docker run -d -p 8000:8000 --name writing_backend writing_assistant_backend
+docker compose up --build
 ```
-El backend quedará disponible en: http://localhost:8000/docs
-
-### 3. Frontend (React)
-Ir a la carpeta del frontend:
-
-```bash
-   git clone <repository-url>
-   cd writing_assistant/backend
+La aplicación quedará disponible en: http://localhost
+Inicialmente solicitará el usuario y contraseña, que, para este ejemplo práctico son: admin y admin123
+Una vez realizado el login se accederá a la interfaz, tal como se muestra en la imagen.
